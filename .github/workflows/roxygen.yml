@@ -9,7 +9,7 @@ name: roxygen
 
 jobs:
   document:
-    if: contains(github.event.head_commit.message, '[roxy]') }}
+    if: contains(github.event.head_commit.message, '[roxy]')
     name: roxy
     runs-on: ubuntu-latest
     env:
