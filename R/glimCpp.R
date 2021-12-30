@@ -1,5 +1,3 @@
-
-
 #' Generalized Local Independence Model (GLIM)
 #' 
 #' @description

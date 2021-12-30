@@ -2,14 +2,14 @@
 % Please edit documentation in R/blimCpp.R
 \name{blimCpp}
 \alias{blimCpp}
-\title{TESTESTTEST Basic Local Independence Models (BLIMs) using C++}
+\title{Basic Local Independence Models (BLIMs) using C++}
 \usage{
 blimCpp(K, N.R, tol = 1e-07, maxiter = 10000, fdb = FALSE)
 }
 \arguments{
 \item{K}{a state-by-problem indicator matrix representing the knowledge
-structure.  An element is one if the problem is contained in the state,
-and else zero.}
+structure.  An element is one if the problem is contained in the 
+state, and else zero.}
 
 \item{N.R}{a (named) vector of absolute frequencies of response patterns.}
 

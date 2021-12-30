@@ -57,6 +57,7 @@ blimCpp <- function(K, N.R, tol = 1e-07 , maxiter = 10000,
   iter <- 1
   maxdiff <- 2 * tol
 
+  
   # convert to double for c++ function
   mode(R) <- mode(W) <- mode(K) <- mode(N.R) <- mode(P.K) <- mode(beta) <- 
              mode(eta) <- "double"

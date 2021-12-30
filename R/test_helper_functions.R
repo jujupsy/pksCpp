@@ -9,7 +9,7 @@
 # P(K)   ~ unif(0, 1) -> normalized
 
 genPKS <- function(kQ = 25, kK = 500, seed = 42, coef_gen = runif, ...){
-  cat(paste0("Generating new KS with seed: ", seed, "\n")) 
+  # cat(paste0("Generating new KS with seed: ", seed, "\n")) 
   set.seed(seed)
   # power set of Q:
   potQ <- expand.grid(rep(list(0:1), kQ), KEEP.OUT.ATTRS = F)
