@@ -1,4 +1,4 @@
-#' TESTEST Basic Local Independence Models (BLIMs) using C++
+#' TESTESTTEST Basic Local Independence Models (BLIMs) using C++
 #'
 #' @description
 #' Fits a basic local independence model (BLIM) for probabilistic 

@@ -1,13 +1,15 @@
-# run roxygen2 if commit starts with /roxy
+# run roxygen2 if commit description contains [roxy]
 on:
-  issue_comment:
-    types: [created]
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
 
 name: roxygen
 
 jobs:
   document:
-    if: startsWith(github.event.head_commit.message, '/roxy') }}
+    if: contains(github.event.head_commit.message, '[roxy]') }}
     name: roxy
     runs-on: ubuntu-latest
     env:
