@@ -1,0 +1,7 @@
+
+
+Changes in 0.0-1
+
+  * Function blimCpp() for fitting basic local independence models
+  * Function glimCpp() for fitting generalized local independence models
+
