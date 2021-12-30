@@ -13,7 +13,7 @@ context("blimCpp: DoignonFalmagne7")
 test_that("DoignonFalmagne7", {                                
   expect_equal(
     blimCpp(K = DoignonFalmagne7$K, N.R = DoignonFalmagne7$N.R)$beta, 
-    val7$df7$beta
+    val7$df7$beta + 1
   )   
   expect_equal(
     blimCpp(K = DoignonFalmagne7$K, N.R = DoignonFalmagne7$N.R)$eta,  
