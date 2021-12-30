@@ -5,8 +5,8 @@
 #' knowledge structures by maximum likelihood estimation.
 #'
 #' @param K a state-by-problem indicator matrix representing the knowledge
-#'          structure.  An element is one if the problem is contained in the state,
-#'          and else zero.
+#'          structure.  An element is one if the problem is contained in the 
+#'          state, and else zero.
 #' @param N.R a (named) vector of absolute frequencies of response patterns.
 #' @param tol tolerance, stopping criterion for iteration.
 #' @param maxiter the maximum number of iterations.
