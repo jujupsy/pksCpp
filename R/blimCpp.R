@@ -38,7 +38,6 @@ blimCpp <- function(K, N.R, tol = 1e-07 , maxiter = 10000,
   K     <- as.matrix(K)
   R     <- as.binmat(N.R, uniq = TRUE)
 
-  
   # input checks
   if(ncol(K) != ncol(R)) stop("Matrix K and R must have the same number of columns")
 
