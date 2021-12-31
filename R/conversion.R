@@ -65,6 +65,9 @@ NULL
 #' @export
 as.pattern <- function(R, freq = FALSE, as.letters = FALSE, as.set = FALSE){
   
+  #handle  missings
+  R[is.na(R)] <- "M"
+  
   if(freq){
     N.R <- table(apply(R, 1, paste, collapse=""))
     setNames(as.integer(N.R), names(N.R))          # convert to named int
