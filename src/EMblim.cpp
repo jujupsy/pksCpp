@@ -1,95 +1,76 @@
-#include <RcppEigen.h>
 
 // [[Rcpp::depends(RcppEigen)]]
+#include <RcppEigen.h>
 
-using namespace Eigen;
+//using namespace Eigen;
+
 
 // [[Rcpp::export]]
 Rcpp::List emBLIMcpp(
-    const Eigen::Map < Eigen::MatrixXd > R,
-    const Eigen::Map < Eigen::MatrixXd > W,
-    const Eigen::Map < Eigen::MatrixXd > K,
-    const Eigen::Map < Eigen::VectorXd > NR,
-    const Eigen::Map < Eigen::VectorXd > PKr,
-    const Eigen::Map < Eigen::VectorXd > betar,
-    const Eigen::Map < Eigen::VectorXd > etar,
-    const int maxiter = 10000,
-    const double tol = 1e-07,
-    const bool fdb = true
+  const Eigen::Map < Eigen::MatrixXd > R,
+  const Eigen::Map < Eigen::MatrixXd > K,
+  const Eigen::Map < Eigen::VectorXd > NR,
+        Eigen::Map < Eigen::VectorXd > PK,
+        Eigen::Map < Eigen::VectorXd > beta,
+        Eigen::Map < Eigen::VectorXd > eta,
+  const int maxiter = 100000,
+  const double tol = 1e-07,
+  const bool fdb = false
 
-    ) {
+) {
 
-  //copy mapped input (just to be sure)
-
-  Eigen::VectorXd PK = PKr;
-  Eigen::VectorXd eta = etar;
-  Eigen::VectorXd beta = betar;
-
-        
-  Eigen::MatrixXd PRK;
-  Eigen::MatrixXd PR;
-  Eigen::MatrixXd PKR;
+  // declare objects
+  Eigen::MatrixXd PRK(R.rows(), K.rows());
+  Eigen::MatrixXd PR(R.rows(), 1);
+  Eigen::MatrixXd PKR(K.rows(), R.rows());
 
   Eigen::MatrixXd diff(3, 1);
 
-  Eigen::VectorXd PKold;
-  Eigen::VectorXd etaold;
-  Eigen::VectorXd betaold;
+  Eigen::VectorXd PKold(PK.size());
+  Eigen::VectorXd etaold(eta.size());
+  Eigen::VectorXd betaold(beta.size());
+
+  // generate additional matrices
+  Eigen::MatrixXd notR = (1 - R.array()).matrix(); // 1 - R 
+  Eigen::MatrixXd notK = (1 - K.array()).matrix(); // 1 - K
+  
+  // log(0) and log(1 - 1) prevention limits
+  double eps = 1e-9;
+  Eigen::VectorXd lowerLimit(beta.size());
+  Eigen::VectorXd upperLimit(beta.size());
+  lowerLimit.fill(eps);
+  upperLimit.fill(1 - eps);
 
   int iter = 0;
-  double eps = 1e-9;
   bool converged = false;
 
-
-  // EM-LOOP
   do {
 
     // E-Step
-    //prevent log zero // maybe .array() <= eps is faster....
-    for (int i = 0; i < eta.rows(); i++) {
-      if (eta(i) < eps) {
-        eta(i) += eps;
-      } else if (eta(i) > (1 - eps)) {
-        eta(i) -= eps;
-      }
+    //
+    //prevent log zero
+    beta = (beta.array() > (1 - eps)).select(upperLimit, 
+            (beta.array() < eps).select(lowerLimit, beta));
+    eta  = ( eta.array() > (1 - eps)).select(upperLimit, 
+                     ( eta.array() < eps).select(lowerLimit,  eta));
 
-      if (beta(i) < eps) {
-        beta(i) += eps;
-      } else if (beta(i) > (1 - eps)) {
-        beta(i) -= eps;
-      }
-    }
+    // P(R|K)
+    PRK = 
+      (
+       (   R * ((1 - beta.array()).log()).matrix().asDiagonal()) *    K.transpose() +
+       (   R * (      eta.array( ).log()).matrix().asDiagonal()) * notK.transpose() +
+       (notR * (     beta.array( ).log()).matrix().asDiagonal()) *    K.transpose() +
+       (notR * ((1 -  eta.array()).log()).matrix().asDiagonal()) * notK.transpose()
+      ).array().exp().matrix();
 
-    PRK =
-      (R.cwiseProduct(
-                      ((1 - beta.array()).log().matrix()).replicate(1, R.rows()).transpose()
-                     ) *
-       K.transpose() +
-
-       R.cwiseProduct(
-         (eta.array().log().matrix()).replicate(1, R.rows()).transpose()
-         ) *
-       (
-        ((1 - K.array()).matrix()).transpose()
-       ) +
-
-       (1 - R.array()).matrix().cwiseProduct(
-         (beta.array().log().matrix()).replicate(1, R.rows()).transpose()
-         ) *
-       K.transpose() +
-
-       (1 - R.array()).matrix().cwiseProduct(
-         ((1 - eta.array()).log().matrix()).replicate(1, R.rows()).transpose()
-         ) *
-       (((1 - K.array()).matrix()).transpose())
-       ).array().exp().matrix();
-
+    // P(R) = sum_K(P(R, K)) = sum_K(P(R | K) * pi_K)
     PR = PRK * PK;
-
+    
+    // P(K | R)
     PKR = (PK * PR.cwiseInverse().transpose()).cwiseProduct(PRK.transpose());
 
     // M - Step
-
+    //
     // save old estimates
     PKold = PK;
     etaold = eta;
@@ -100,17 +81,18 @@ Rcpp::List emBLIMcpp(
     PK /= NR.sum();
 
     // beta, eta
-    beta = (
-        (((PKR.transpose() * K).cwiseProduct(W)).transpose()) * NR
-        ).cwiseQuotient(
-          ((PKR.transpose() * K).transpose()) * NR);
+    beta = 
+      (
+        (((PKR.transpose() * K).cwiseProduct(notR)).transpose()) * NR
+      ).cwiseQuotient(
+        ((PKR.transpose() * K).transpose()) * NR);
 
-
-    eta = (
-        (((PKR.transpose() * ((1 - K.array()).matrix())).cwiseProduct(R)).transpose()) * NR
-        ).cwiseQuotient(
-          ((PKR.transpose() * (1 - K.array()).matrix()).transpose()) * NR);
-
+    eta = 
+      (
+        (((PKR.transpose() * notK).cwiseProduct(R)).transpose()) * NR
+      ).cwiseQuotient(
+        ((PKR.transpose() * notK).transpose()) * NR);
+     
     diff(0, 0) = ((PKold - PK).cwiseAbs().maxCoeff()) < tol;
     diff(1, 0) = ((etaold - eta).cwiseAbs().maxCoeff()) < tol;
     diff(2, 0) = ((betaold - beta).cwiseAbs().maxCoeff()) < tol;
@@ -125,9 +107,10 @@ Rcpp::List emBLIMcpp(
         Rcpp::Rcout << ".";
       }
     }
-  }
-  while (diff.sum() < 3 && iter < maxiter);
+  
+  } while (diff.sum() < 3 && iter < maxiter);
 
+  
   if (diff.sum() >= 3) {
     converged = true;
   }
@@ -137,7 +120,7 @@ Rcpp::List emBLIMcpp(
     Rcpp::Rcout << "     **** DONE ****" << std::endl;
 
     if (iter >= maxiter) {
-      Rcpp::Rcout << "Maximum # of " << maxiter << " Iterations reached." << std::endl;
+      Rcpp::Rcout << "Maximum # of " << maxiter << " iterations reached." << std::endl;
     }
 
     if (converged == false) {
@@ -146,59 +129,33 @@ Rcpp::List emBLIMcpp(
 
   }
 
+ // compute PKR with final estimates
+  beta = (beta.array() > (1 - eps)).select(upperLimit, 
+                     (beta.array() < eps).select(lowerLimit, beta));
+  eta  = ( eta.array() > (1 - eps)).select(upperLimit, 
+                     ( eta.array() < eps).select(lowerLimit,  eta));
 
-
-  // compute PKR with final estimates
-  for (int i = 0; i < eta.rows(); i++) {
-    if (eta(i) < eps) {
-      eta(i) += eps;
-    } else if (eta(i) > (1 - eps)) {
-      eta(i) -= eps;
-    }
-
-    if (beta(i) < eps) {
-      beta(i) += eps;
-    } else if (beta(i) > (1 - eps)) {
-      beta(i) -= eps;
-    }
-  } 
-  PRK =
-    (R.cwiseProduct(
-                    ((1 - beta.array()).log().matrix()).replicate(1, R.rows()).transpose()
-                   ) *
-     K.transpose() +
-
-     R.cwiseProduct(
-       (eta.array().log().matrix()).replicate(1, R.rows()).transpose()
-       ) *
-     (
-      ((1 - K.array()).matrix()).transpose()
-     ) +
-
-     (1 - R.array()).matrix().cwiseProduct(
-       (beta.array().log().matrix()).replicate(1, R.rows()).transpose()
-       ) *
-     K.transpose() +
-
-     (1 - R.array()).matrix().cwiseProduct(
-       ((1 - eta.array()).log().matrix()).replicate(1, R.rows()).transpose()
-       ) *
-     (((1 - K.array()).matrix()).transpose())
-     ).array().exp().matrix();
+  PRK = 
+    (
+       (   R * ((1 - beta.array()).log()).matrix().asDiagonal()) *    K.transpose() +
+       (   R * (      eta.array( ).log()).matrix().asDiagonal()) * notK.transpose() +
+       (notR * (     beta.array( ).log()).matrix().asDiagonal()) *    K.transpose() +
+       (notR * ((1 -  eta.array()).log()).matrix().asDiagonal()) * notK.transpose()
+    ).array().exp().matrix();
 
   PR = PRK * PK;
 
   PKR = (PK * PR.cwiseInverse().transpose()).cwiseProduct(PRK.transpose());
-
+  
   return Rcpp::List::create(Rcpp::Named("P.K") = PK,
-      Rcpp::Named("beta") = beta,
-      Rcpp::Named("eta") = eta,
-      Rcpp::Named("iter") = iter,
-      Rcpp::Named("maxiter") = iter >= maxiter,
-      Rcpp::Named("converged") = converged,
-      Rcpp::Named("PK.R") = PKR,
-      Rcpp::Named("P.R") = PR
-
-      );
+    Rcpp::Named("beta") = beta,
+    Rcpp::Named("eta") = eta,
+    Rcpp::Named("iterations") = iter,
+    Rcpp::Named("maxiter") = iter >= maxiter,
+    Rcpp::Named("converged") = converged,
+    Rcpp::Named("PK.R") = PKR,
+    Rcpp::Named("P.R") = PR
+    
+  );
 
 }

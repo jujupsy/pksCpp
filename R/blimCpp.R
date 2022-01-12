@@ -51,7 +51,6 @@ blimCpp <- function(K, N.R, tol = 1e-07 , maxiter = 10000,
   beta <- setNames(rep(0.1, nitems), colnames(K))         # initital parameter estimations 
   eta  <- setNames(rep(0.1, nitems), colnames(K))
 
-  W <- (R == 0) # W: wrong pattern
   R <- (R == 1) # R: right pattern
 
   iter <- 1
@@ -59,11 +58,14 @@ blimCpp <- function(K, N.R, tol = 1e-07 , maxiter = 10000,
 
   
   # convert to double for c++ function
-  mode(R) <- mode(W) <- mode(K) <- mode(N.R) <- mode(P.K) <- mode(beta) <- 
+  mode(R) <- mode(K) <- mode(N.R) <- mode(P.K) <- mode(beta) <- 
              mode(eta) <- "double"
 
   # EM Loop 
-  para <- emBLIMcpp(R, W, K, N.R, P.K, beta, eta, maxiter, tol, fdb)
+  para <- emBLIMcpp(R, K, N.R, P.K, beta, eta, maxiter, tol, fdb)
+  
+  # drop dimensions 
+  para$P.R <- drop(para$P.R)
 
   # warning if maxiter was reached
   if(para$maxiter) 

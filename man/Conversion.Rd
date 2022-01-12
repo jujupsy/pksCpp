@@ -43,6 +43,9 @@ patterns or knowledge states.
 \details{
 Functions \code{as.pattern} and \code{as.binmat} were adapted from the 
   package \code{pks} to deal with missing data.
+  
+  Missings in the binmat have to be coded as NA and are  represented in the
+  pattern as M
 }
 \examples{
 data(DoignonFalmagne7)
@@ -57,4 +60,6 @@ dim(as.binmat(DoignonFalmagne7$N.R, uniq = FALSE))
 ## Knowledge structure as binary matrix
 as.binmat(c("000", "100", "101", "111"))
 as.binmat(set(set(), set("a"), set("a", "c"), set("a", "b", "c")))
+
+## deal with missings
 }

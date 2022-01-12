@@ -12,22 +12,21 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
 // emBLIMcpp
-Rcpp::List emBLIMcpp(const Eigen::Map < Eigen::MatrixXd > R, const Eigen::Map < Eigen::MatrixXd > W, const Eigen::Map < Eigen::MatrixXd > K, const Eigen::Map < Eigen::VectorXd > NR, const Eigen::Map < Eigen::VectorXd > PKr, const Eigen::Map < Eigen::VectorXd > betar, const Eigen::Map < Eigen::VectorXd > etar, const int maxiter, const double tol, const bool fdb);
-RcppExport SEXP _pksCpp_emBLIMcpp(SEXP RSEXP, SEXP WSEXP, SEXP KSEXP, SEXP NRSEXP, SEXP PKrSEXP, SEXP betarSEXP, SEXP etarSEXP, SEXP maxiterSEXP, SEXP tolSEXP, SEXP fdbSEXP) {
+Rcpp::List emBLIMcpp(const Eigen::Map < Eigen::MatrixXd > R, const Eigen::Map < Eigen::MatrixXd > K, const Eigen::Map < Eigen::VectorXd > NR, Eigen::Map < Eigen::VectorXd > PK, Eigen::Map < Eigen::VectorXd > beta, Eigen::Map < Eigen::VectorXd > eta, const int maxiter, const double tol, const bool fdb);
+RcppExport SEXP _pksCpp_emBLIMcpp(SEXP RSEXP, SEXP KSEXP, SEXP NRSEXP, SEXP PKSEXP, SEXP betaSEXP, SEXP etaSEXP, SEXP maxiterSEXP, SEXP tolSEXP, SEXP fdbSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const Eigen::Map < Eigen::MatrixXd > >::type R(RSEXP);
-    Rcpp::traits::input_parameter< const Eigen::Map < Eigen::MatrixXd > >::type W(WSEXP);
     Rcpp::traits::input_parameter< const Eigen::Map < Eigen::MatrixXd > >::type K(KSEXP);
     Rcpp::traits::input_parameter< const Eigen::Map < Eigen::VectorXd > >::type NR(NRSEXP);
-    Rcpp::traits::input_parameter< const Eigen::Map < Eigen::VectorXd > >::type PKr(PKrSEXP);
-    Rcpp::traits::input_parameter< const Eigen::Map < Eigen::VectorXd > >::type betar(betarSEXP);
-    Rcpp::traits::input_parameter< const Eigen::Map < Eigen::VectorXd > >::type etar(etarSEXP);
+    Rcpp::traits::input_parameter< Eigen::Map < Eigen::VectorXd > >::type PK(PKSEXP);
+    Rcpp::traits::input_parameter< Eigen::Map < Eigen::VectorXd > >::type beta(betaSEXP);
+    Rcpp::traits::input_parameter< Eigen::Map < Eigen::VectorXd > >::type eta(etaSEXP);
     Rcpp::traits::input_parameter< const int >::type maxiter(maxiterSEXP);
     Rcpp::traits::input_parameter< const double >::type tol(tolSEXP);
     Rcpp::traits::input_parameter< const bool >::type fdb(fdbSEXP);
-    rcpp_result_gen = Rcpp::wrap(emBLIMcpp(R, W, K, NR, PKr, betar, etar, maxiter, tol, fdb));
+    rcpp_result_gen = Rcpp::wrap(emBLIMcpp(R, K, NR, PK, beta, eta, maxiter, tol, fdb));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -54,7 +53,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_pksCpp_emBLIMcpp", (DL_FUNC) &_pksCpp_emBLIMcpp, 10},
+    {"_pksCpp_emBLIMcpp", (DL_FUNC) &_pksCpp_emBLIMcpp, 9},
     {"_pksCpp_emGLIMcpp", (DL_FUNC) &_pksCpp_emGLIMcpp, 11},
     {NULL, NULL, 0}
 };
