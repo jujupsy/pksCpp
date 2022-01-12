@@ -106,6 +106,8 @@ Rcpp::List emBLIMcpp(
       } else {
         Rcpp::Rcout << ".";
       }
+    } else if (iter % 10 == 0) {
+      Rcpp::checkUserInterrupt();
     }
   
   } while (diff.sum() < 3 && iter < maxiter);

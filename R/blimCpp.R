@@ -77,7 +77,7 @@ blimCpp <- function(K, N.R, tol = 1e-07 , maxiter = 10000,
   # compute missing statistics for class "blim"
   # copied from blim.R
 
-  para$npar <- 2*nitems + nstates - 1
+  para$npar <- 2 * nitems + nstates - 1
 
   ## Goodness of fit, df = number of patterns or persons
   fitted <- setNames(N*para$P.R, names(N.R))
