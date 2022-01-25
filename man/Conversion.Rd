@@ -45,7 +45,8 @@ Functions \code{as.pattern} and \code{as.binmat} were adapted from the
   package \code{pks} to deal with missing data.
   
   Missings in the binmat have to be coded as \code{NA} and are  represented in the
-  pattern as \code{M}
+  pattern as \code{M}. 
+  \code{as.letters} or \code{as.set} ignore NA values.
 }
 \examples{
 data(DoignonFalmagne7)

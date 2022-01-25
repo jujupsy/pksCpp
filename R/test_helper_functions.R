@@ -1,6 +1,28 @@
 # helper functions for test.R
 
 
+# custom testhat expect function
+
+# mean absolute difference < tol
+expect_diffLessTol <- function(object, expected, tolerance = 1e-14, 
+                               label = NULL, expected.label = NULL) {
+  
+  act <- quasi_label(rlang::enquo(object), label, arg = "object")
+  exp <- quasi_label(rlang::enquo(expected), expected.label, arg = "expected")
+  
+  abs_diff <- abs(unlist(act$val) - unlist(exp$val))
+  
+  
+  
+  expect(
+    all(abs_diff < tolerance),
+    sprintf("%s not equal to %s.\nMean absolute difference: %s \nMax. absolute difference: %s", 
+            act$lab, exp$lab, mean(abs_diff), max(abs_diff))
+  )
+  invisible(act$val)
+}
+
+
 ### simulate random probabilistic knowledge structure:
 # |Q| = 25
 # |K| = 500
