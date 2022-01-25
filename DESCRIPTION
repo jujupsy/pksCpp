@@ -19,7 +19,8 @@ Imports:
   stats,
   sets
 Suggests:
-  testthat
+  testthat,
+  rlang
 LinkingTo: 
   Rcpp, 
   RcppEigen
