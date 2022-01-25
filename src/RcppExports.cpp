@@ -51,10 +51,32 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// emIMBLIMcpp
+Rcpp::List emIMBLIMcpp(const Eigen::Map<Eigen::MatrixXd> R, const Eigen::Map<Eigen::MatrixXd> M, const Eigen::Map<Eigen::MatrixXd> K, const Eigen::Map<Eigen::VectorXd> NR, Eigen::Map<Eigen::VectorXd> PK, Eigen::Map<Eigen::VectorXd> beta, Eigen::Map<Eigen::VectorXd> eta, const Eigen::Map<Eigen::MatrixXd> PM, const int maxiter, const double tol, const bool fdb);
+RcppExport SEXP _pksCpp_emIMBLIMcpp(SEXP RSEXP, SEXP MSEXP, SEXP KSEXP, SEXP NRSEXP, SEXP PKSEXP, SEXP betaSEXP, SEXP etaSEXP, SEXP PMSEXP, SEXP maxiterSEXP, SEXP tolSEXP, SEXP fdbSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::MatrixXd> >::type R(RSEXP);
+    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::MatrixXd> >::type M(MSEXP);
+    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::MatrixXd> >::type K(KSEXP);
+    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::VectorXd> >::type NR(NRSEXP);
+    Rcpp::traits::input_parameter< Eigen::Map<Eigen::VectorXd> >::type PK(PKSEXP);
+    Rcpp::traits::input_parameter< Eigen::Map<Eigen::VectorXd> >::type beta(betaSEXP);
+    Rcpp::traits::input_parameter< Eigen::Map<Eigen::VectorXd> >::type eta(etaSEXP);
+    Rcpp::traits::input_parameter< const Eigen::Map<Eigen::MatrixXd> >::type PM(PMSEXP);
+    Rcpp::traits::input_parameter< const int >::type maxiter(maxiterSEXP);
+    Rcpp::traits::input_parameter< const double >::type tol(tolSEXP);
+    Rcpp::traits::input_parameter< const bool >::type fdb(fdbSEXP);
+    rcpp_result_gen = Rcpp::wrap(emIMBLIMcpp(R, M, K, NR, PK, beta, eta, PM, maxiter, tol, fdb));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_pksCpp_emBLIMcpp", (DL_FUNC) &_pksCpp_emBLIMcpp, 9},
     {"_pksCpp_emGLIMcpp", (DL_FUNC) &_pksCpp_emGLIMcpp, 11},
+    {"_pksCpp_emIMBLIMcpp", (DL_FUNC) &_pksCpp_emIMBLIMcpp, 11},
     {NULL, NULL, 0}
 };
 

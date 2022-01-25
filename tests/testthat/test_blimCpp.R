@@ -6,23 +6,17 @@
 
 val7 <- readRDS(test_path(".", "valid_data_tol7.rds"))
 
+comp <- c("beta", "eta", "P.K", "PK.R", "P.R", "converged", "iterations")
+
 ## DoignonFalmagne7
 data(DoignonFalmagne7)
 context("blimCpp: DoignonFalmagne7")
 #######################################################################
 test_that("DoignonFalmagne7", {                                
-  expect_equal(
-    blimCpp(K = DoignonFalmagne7$K, N.R = DoignonFalmagne7$N.R)$beta, 
-    val7$df7$beta
+  expect_diffLessTol(
+    blimCpp(K = DoignonFalmagne7$K, N.R = DoignonFalmagne7$N.R)[c("beta", "eta", "P.K")], 
+    val7$df7[c("beta", "eta", "P.K")]
   )   
-  expect_equal(
-    blimCpp(K = DoignonFalmagne7$K, N.R = DoignonFalmagne7$N.R)$eta,  
-    val7$df7$eta
-  )    
-  expect_equal(
-    blimCpp(K = DoignonFalmagne7$K, N.R = DoignonFalmagne7$N.R)$P.K,  
-    val7$df7$P.K
-  )    
 })                                                             
 #######################################################################
 
@@ -34,18 +28,10 @@ data(chess)
 context("blimCpp: chess dst1")
 #######################################################################
 test_that("Chess.dst1", {                                
-  expect_equal(
-    blimCpp(K = chess$dst1, N.R = chess$N.R)$beta, 
-    val7$chess1$beta, tolerance = tol
+  expect_diffLessTol(
+    blimCpp(K = chess$dst1, N.R = chess$N.R)[c("beta", "eta", "P.K")], 
+    val7$chess1[c("beta", "eta", "P.K")], tolerance = tol
   )   
-  expect_equal(
-    blimCpp(K = chess$dst1, N.R = chess$N.R)$eta,  
-    val7$chess1$eta, tolerance = tol
-  )    
-  expect_equal(
-    blimCpp(K = chess$dst1, N.R = chess$N.R)$P.K,  
-    val7$chess1$P.K,  tolerance  = tol
-  )    
 })                                                             
 #######################################################################
 
@@ -55,18 +41,10 @@ data(chess)
 context("blimCpp: chess dst3")
 #######################################################################
 test_that("Chess.dst3", {                                
-  expect_equal(
-    blimCpp(K = chess$dst3, N.R = chess$N.R)$beta, 
-    val7$chess3$beta, tolerance = tol
-  )   
-  expect_equal(
-    blimCpp(K = chess$dst3, N.R = chess$N.R)$eta,  
-    val7$chess3$eta, tolerance = tol
-  )    
-  expect_equal(
-    blimCpp(K = chess$dst3, N.R = chess$N.R)$P.K,  
-    val7$chess3$P.K,  tolerance  = tol
-  )    
+  expect_diffLessTol(
+    blimCpp(K = chess$dst3, N.R = chess$N.R)[c("beta", "eta", "P.K")], 
+    val7$chess3[c("beta", "eta", "P.K")], tolerance = tol
+  )     
 })                                                             
 #######################################################################
 
@@ -76,24 +54,42 @@ data(chess)
 context("blimCpp: chess dst4")
 #######################################################################
 test_that("Chess.dst4", {                                
-  expect_equal(
-    blimCpp(K = chess$dst4, N.R = chess$N.R)$beta, 
-    val7$chess4$beta, tolerance = tol
+  expect_diffLessTol(
+    blimCpp(K = chess$dst4, N.R = chess$N.R)[c("beta", "eta", "P.K")], 
+    val7$chess4[c("beta", "eta", "P.K")], tolerance = tol
   )   
-  expect_equal(
-    blimCpp(K = chess$dst4, N.R = chess$N.R)$eta,  
-    val7$chess4$eta, tolerance = tol
-  )    
-  expect_equal(
-    blimCpp(K = chess$dst4, N.R = chess$N.R)$P.K,  
-    val7$chess4$P.K,  tolerance  = tol
-  )    
 })                                                             
 #######################################################################
 
 
 
 
+## blim <=> IMBLIM <=> MissBLIM if M = 0
+comp <- c("beta", "eta", "P.K", "PK.R", "P.R", "converged", "iterations")
+data(chess)
+context("blim <=> IMBLIM <=> MissBLIM if M = 0")
+#######################################################################
+test_that("Chess.dst4", {  
+  # blim <=> blim omit if M=0
+  expect_diffLessTol(
+    blimCpp(K = chess$dst3, N.R = chess$N.R)[comp], 
+    blimCpp(K = chess$dst3, N.R = chess$N.R, na.use = "omit")[comp]
+  )   
+
+  # blim <=> blim missing-as-wrong if M=0
+  expect_diffLessTol(
+    blimCpp(K = chess$dst3, N.R = chess$N.R)[comp], 
+    blimCpp(K = chess$dst3, N.R = chess$N.R, na.use = "missing-as-wrong")[comp]
+  )   
+
+  # blim <=> IMBLIM if M=0
+  expect_diffLessTol(
+    blimCpp(K = chess$dst3, N.R = chess$N.R)[comp], 
+    blimCpp(K = chess$dst3, N.R = chess$N.R, na.use = "IMBLIM")[comp]
+  )   
+
+})                                                             
+#######################################################################
 
 
 

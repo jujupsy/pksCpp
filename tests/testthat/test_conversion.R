@@ -3,7 +3,7 @@
 
 
 data(DoignonFalmagne7)
-context("as.pattern")
+context("as.pattern without NA")
 test_that("as.pattern DoignonFalmagne7", {                                
   expect_equal(
     as.pattern(DoignonFalmagne7$K), 
@@ -60,6 +60,36 @@ test_that("as.pattern endm", {
 })
 
 
+K <- DoignonFalmagne7$K
+K[1, 4] <- K[3, 3] <- K[7, 1] <- NA
+context("as.pattern with NA")
+test_that("as.pattern with NA DoignonFalmagne7", {                                
+  expect_equal(
+    as.pattern(K), 
+    c("000M0", "10000", "01M00", "11000", "11100", "11010", "M1110", 
+      "11101", "11111")
+  )   
+  expect_equal(
+    as.pattern(K, freq = TRUE),  
+    c("000M0" = 1L, "01M00" = 1L, "10000" = 1L, "11000" = 1L, "11010" = 1L, 
+      "11100" = 1L, "11101" = 1L, "11111" = 1L, "M1110" = 1L)
+  )
+  expect_warning(
+    as.pattern(K, as.letters = TRUE),  
+    "Caveat: as.letters or as.set ignore NA values!"
+  )   
+  expect_warning(
+    as.pattern(K, as.set = TRUE),  
+    "Caveat: as.letters or as.set ignore NA values!"
+  )   
+})
+
+
+
+
+
+
+
 data(DoignonFalmagne7)
 dim(as.binmat(DoignonFalmagne7$N.R))
 dim(as.binmat(DoignonFalmagne7$N.R, uniq = FALSE))
@@ -70,7 +100,7 @@ as.binmat(set(set(), set("a"), set("a", "c"), set("a", "b", "c")))
 
 
 data(DoignonFalmagne7)
-context("as.binmat")
+context("as.binmat without NA")
 test_that("as.binmat DoignonFalmagne7", {                                
   expect_equal(
     as.binmat(c("000", "100", "101", "111")), 
@@ -107,3 +137,29 @@ test_that("as.binmat DoignonFalmagne7", {
 })
 
 
+context("as.binmat with NA")
+test_that("as.binmat DoignonFalmagne7", {                                
+  expect_equal(
+    as.binmat(c("00M", "100", "M01", "1M1")),
+    structure(c(0L, 1L, NA, 1L, 0L, 0L, 0L, NA, NA, 0L, 1L, 1L), .Dim = 4:3, .Dimnames = list(
+      NULL, c("a", "b", "c")))
+  )   
+  expect_equal(
+    as.binmat(c("00M", "100", "M01", "1M1"), col.names = c("r", "q", "jk")),
+    structure(c(0L, 1L, NA, 1L, 0L, 0L, 0L, NA, NA, 0L, 1L, 1L), .Dim = 4:3, .Dimnames = list(
+      NULL, c("r", "q", "jk")))
+  )   
+  expect_equal(
+    as.binmat(c("00M" = 10, "100" = 5, "M01" = 3, "1M1" = 1), col.names = c("r", "q", "jk"), uniq = TRUE),
+    structure(c(0L, 1L, NA, 1L, 0L, 0L, 0L, NA, NA, 0L, 1L, 1L), .Dim = 4:3, .Dimnames = list(
+      NULL, c("r", "q", "jk")))
+  )
+  expect_equal(
+    as.binmat(c("00M" = 10, "100" = 5, "M01" = 3, "1M1" = 1), col.names = c("r", "q", "jk"), uniq = FALSE),
+    structure(c(0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 1L, 1L, 1L, 
+                1L, 1L, NA, NA, NA, 1L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 
+                0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, NA, NA, NA, NA, NA, NA, NA, NA, 
+                NA, NA, NA, 0L, 0L, 0L, 0L, 0L, 1L, 1L, 1L, 1L), 
+              .Dim = c(19L, 3L), .Dimnames = list(NULL, c("r", "q", "jk")))
+ ) 
+})

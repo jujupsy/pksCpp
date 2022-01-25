@@ -2,9 +2,6 @@
 // [[Rcpp::depends(RcppEigen)]]
 #include <RcppEigen.h>
 
-//using namespace Eigen;
-
-
 // [[Rcpp::export]]
 Rcpp::List emBLIMcpp(
   const Eigen::Map < Eigen::MatrixXd > R,

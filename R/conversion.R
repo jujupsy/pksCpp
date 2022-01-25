@@ -25,8 +25,9 @@
 #'   Functions \code{as.pattern} and \code{as.binmat} were adapted from the 
 #'   package \code{pks} to deal with missing data.
 #'   
-#'   Missings in the binmat have to be coded as NA and are  represented in the
-#'   pattern as M
+#'   Missings in the binmat have to be coded as \code{NA} and are  represented in the
+#'   pattern as \code{M}. 
+#'   \code{as.letters} or \code{as.set} ignore NA values.
 #' 
 #' @return
 #'   \code{as.pattern} returns a vector of integers named by the response
@@ -66,6 +67,7 @@ NULL
 as.pattern <- function(R, freq = FALSE, as.letters = FALSE, as.set = FALSE){
   
   #handle  missings
+  missings <- any(is.na(R)) # are there any missings?
   R[is.na(R)] <- "M"
   
   if(freq){
@@ -73,6 +75,9 @@ as.pattern <- function(R, freq = FALSE, as.letters = FALSE, as.set = FALSE){
     setNames(as.integer(N.R), names(N.R))          # convert to named int
   }else
     if(as.letters | as.set){
+      if(missings){
+        warning("Caveat: as.letters or as.set ignore NA values!")
+      }
       nitems <- ncol(R)
       item.names <- 
         make.unique(c("a", letters[(seq_len(nitems) %% 26) + 1])[-(nitems + 1)],
@@ -123,6 +128,7 @@ as.binmat <- function(N.R, uniq = TRUE, col.names = NULL){
       }else
         col.names
   }
+  R[R == "M"] <- NA 
   storage.mode(R) <- "integer"
   R
 }

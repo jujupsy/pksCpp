@@ -44,8 +44,8 @@ patterns or knowledge states.
 Functions \code{as.pattern} and \code{as.binmat} were adapted from the 
   package \code{pks} to deal with missing data.
   
-  Missings in the binmat have to be coded as NA and are  represented in the
-  pattern as M
+  Missings in the binmat have to be coded as \code{NA} and are  represented in the
+  pattern as \code{M}
 }
 \examples{
 data(DoignonFalmagne7)

@@ -9,3 +9,7 @@ emGLIMcpp <- function(weights, R, W, K, NRr, PKr, betar, etar, maxiter = 1000000
     .Call('_pksCpp_emGLIMcpp', PACKAGE = 'pksCpp', weights, R, W, K, NRr, PKr, betar, etar, maxiter, tol, fdb)
 }
 
+emIMBLIMcpp <- function(R, M, K, NR, PK, beta, eta, PM, maxiter = 1000L, tol = 1e-07, fdb = TRUE) {
+    .Call('_pksCpp_emIMBLIMcpp', PACKAGE = 'pksCpp', R, M, K, NR, PK, beta, eta, PM, maxiter, tol, fdb)
+}
+
