@@ -10,3 +10,7 @@ probabilistic knowledge structures. Depends heavely on the pks package.
 
 ## Install
 devtools::install_github("jujupsy/pksCpp")
+
+---
+
+Comments, bugs or ideas? -> please contact: julian.mollenhauer[at]uni-tuebingen.de
