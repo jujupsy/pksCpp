@@ -1,0 +1,25 @@
+Package: pksCpp
+Version: 0.0-1
+Date: 2021-12-23
+Title: Probabilistic Knowledge Structures - Additional models and functions
+Authors@R: c(person(given = "Julian", family = "Mollenhauer", role = c("aut", "cre"), email = "julian.mollenhauer@uni-tuebingen.de"))
+Description: 
+  The package extends the functionality of the pks package and includes functions 
+  optimized in C++ for estimating various pks models.
+Depends: 
+  R (>= 4.0), 
+  pks
+Imports: 
+  Rcpp (>= 1.0.5), 
+  RcppEigen,
+  stats,
+  sets
+Suggests:
+  testthat,
+  rlang
+LinkingTo: 
+  Rcpp, 
+  RcppEigen
+License: GPL (>= 2)
+Encoding: UTF-8
+RoxygenNote: 7.2.3
