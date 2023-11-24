@@ -44,7 +44,6 @@
 #'  state K, not answering or answering one item has no influence on the 
 #'  response behavior for the other items.
 #'  
-#'  
 #'
 #' @return An object of class \code{blim}. See  \code{?blim}.
 #' 
