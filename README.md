@@ -13,4 +13,5 @@ devtools::install_github("jujupsy/pksCpp")
 
 ---
 
-Comments, bugs or ideas? -> please contact: julian.mollenhauer[at]uni-tuebingen.de
+### Comments, bugs or ideas? 
+Please contact: julian.mollenhauer[at]uni-tuebingen.de
