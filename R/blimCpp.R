@@ -12,6 +12,7 @@
 #'            An element is one if the problem is solved by the person, and else zero.
 #'            Missing values are coded as NA.
 #' @param na.use a character string indicating a method to deal with missing values (see Details).
+#' @param initial_parameter_values list containing initial beta, eta and P.K values
 #' @param tol tolerance, stopping criterion for iteration.
 #' @param maxiter the maximum number of iterations.
 #' @param fdb feedback during the optimization.
@@ -61,8 +62,9 @@
 #' @import sets
 #' @import pks
 #' @importFrom Rcpp evalCpp
-blimCpp <- function(K, N.R, na.use = c("omit", "missing-as-wrong", "IMBLIM", "MissBLIM"), 
-                    tol = 1e-07 , maxiter = 10000, fdb = FALSE){
+blimCpp <- function(K, N.R, na.use = c("omit", "missing-as-wrong", "IMBLIM", "MissBLIM"),
+                    initial_parameter_values = NULL, tol = 1e-07 , 
+                    maxiter = 10000, fdb = FALSE){
   
   K <- as.matrix(K)
   
@@ -97,14 +99,38 @@ blimCpp <- function(K, N.R, na.use = c("omit", "missing-as-wrong", "IMBLIM", "Mi
   nitems  <- ncol(K)   # number of items q in Q
   nstates <- nrow(K)   # number of states k in K
   npat    <- nrow(R)   # number of unique response pattern
-
+  
   ## set initial values
-  P.K  <- setNames(rep(1/nstates, nstates),  rownames(K)) # probability vector P(K)
-  beta <- setNames(rep(0.1, nitems), colnames(K))         # initital parameter estimations 
-  eta  <- setNames(rep(0.1, nitems), colnames(K))
-  mu0  <- rep(0.1, nitems)        # mu_q_
-  mu1  <- rep(0.1, nitems)        # mu_q
-
+  if(is.null(initial_parameter_values$P.K)){ # no initial values given
+    P.K  <- setNames(rep(1/nstates, nstates),  rownames(K)) # probability vector P(K)
+  } else {                                   #  initial values given
+    P.K  <- initial_parameter_values$P.K
+  }
+  
+  if(is.null(initial_parameter_values$beta)){ # no initial values given
+    beta <- setNames(rep(0.1, nitems), colnames(K)) 
+  } else {                                    #  initial values given
+    beta  <- initial_parameter_values$beta
+  }
+  
+  if(is.null(initial_parameter_values$eta)){ # no initial values given
+    eta  <- setNames(rep(0.1, nitems), colnames(K))
+  } else {                                    #  initial values given
+    eta  <- initial_parameter_values$eta
+  }
+  
+  if(is.null(initial_parameter_values$mu0)){ # no initial values given
+    mu0  <- rep(0.1, nitems)                 # mu_q_
+  } else {                                    #  initial values given
+    mu0  <- initial_parameter_values$mu0
+  }
+  
+  if(is.null(initial_parameter_values$mu1)){ # no initial values given
+    mu1  <- rep(0.1, nitems)                 # mu_q  
+  } else {                                    #  initial values given
+    mu1  <- initial_parameter_values$mu1
+  }
+  
   .M <- (is.na(R))   # M: missing pattern: missing = 1, otherwise 0
   .R <- (R == 1)     # R: right pattern: right = 1, otherwise 0
   .R[is.na(.R)] <- 0 # 

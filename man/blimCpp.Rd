@@ -8,6 +8,7 @@ blimCpp(
   K,
   N.R,
   na.use = c("omit", "missing-as-wrong", "IMBLIM", "MissBLIM"),
+  initial_parameter_values = NULL,
   tol = 1e-07,
   maxiter = 10000,
   fdb = FALSE
@@ -24,6 +25,8 @@ An element is one if the problem is solved by the person, and else zero.
 Missing values are coded as NA.}
 
 \item{na.use}{a character string indicating a method to deal with missing values (see Details).}
+
+\item{initial_parameter_values}{list containing initial beta, eta and P.K values}
 
 \item{tol}{tolerance, stopping criterion for iteration.}
 
