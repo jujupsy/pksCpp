@@ -1,2 +1,2 @@
 CXX_STD = CXX11
-#PKG_CXXFLAGS = -Wno-ignored-attributes
+PKG_CXXFLAGS = -O3 -Wno-cast-function-type -Wno-ignored-attributes
