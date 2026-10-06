@@ -2,7 +2,7 @@
 % Please edit documentation in R/blimCpp.R
 \name{blimCpp}
 \alias{blimCpp}
-\title{Basic Local Independence Models (BLIMs) using C++}
+\title{Basic Local Independence Model (BLIM) using C++}
 \usage{
 blimCpp(
   K,
