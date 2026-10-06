@@ -59,7 +59,6 @@
 NULL
 
 
-
 # Convert binary matrix including missing values (NA) to vector of response patterns 
 # adapted from pks package
 
