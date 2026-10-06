@@ -1,0 +1,2 @@
+CXX_STD = CXX14
+PKG_CXXFLAGS = -O3 -Wno-cast-function-type -Wno-ignored-attributes
